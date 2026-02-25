@@ -17,7 +17,7 @@ Portable [Claude Code](https://docs.anthropic.com/en/docs/claude-code) hooks and
 ## Install
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/claude-code-config.git
+git clone https://github.com/jross263/claude-code-config.git
 cd claude-code-config
 bash install.sh
 ```
