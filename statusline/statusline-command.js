@@ -6,20 +6,20 @@ const { execSync } = require("child_process");
 // ---------------------------------------------------------------------------
 // ANSI helpers
 // ---------------------------------------------------------------------------
-const R  = "\x1b[0m";           // reset
-const DIM = "\x1b[2m";          // dim (used for separators and labels)
+const R  = "\x1b[0m";
 
-// Foreground colors
-const TEAL    = "\x1b[36m";     // folder
-const BOLD_TEAL = "\x1b[1;36m"; // folder text
-const DIM_YEL = "\x1b[2;33m";  // model (muted, rarely changes)
-const MAGENTA = "\x1b[35m";     // git branch
-const GREEN   = "\x1b[32m";     // git insertions / ctx low
-const YELLOW  = "\x1b[33m";     // ctx mid
-const RED     = "\x1b[31m";     // git deletions / ctx high
+// Catppuccin Mocha palette (true-color)
+const fg = (r, g, b) => `\x1b[38;2;${r};${g};${b}m`;
+const SAPPHIRE  = fg(116, 199, 236);   // folder
+const LAVENDER  = fg(180, 190, 254);   // model (subtle)
+const MAUVE     = fg(203, 166, 247);   // git branch
+const GREEN     = fg(166, 227, 161);   // insertions / ctx low
+const PEACH     = fg(250, 179, 135);   // ctx mid
+const RED       = fg(243, 139, 168);   // deletions / ctx high
+const SURFACE2  = fg(88,  91, 112);    // separators, dim labels
 
 function sep() {
-  return `${DIM} │ ${R}`;
+  return `${SURFACE2} │ ${R}`;
 }
 
 function abbreviateModel(name) {
@@ -30,7 +30,7 @@ function abbreviateModel(name) {
 // Context bar: 8 blocks wide, color shifts green→yellow→red by percentage.
 function contextBar(usedPct) {
   if (usedPct == null) {
-    return `${DIM}ctx --${R}`;
+    return `${SURFACE2}ctx --${R}`;
   }
   const pct    = Math.round(usedPct);
   const filled = Math.round(pct / 10); // 0–10 steps mapped to 0–8 below
@@ -39,10 +39,10 @@ function contextBar(usedPct) {
 
   let barColor;
   if (pct < 50)       barColor = GREEN;
-  else if (pct < 80)  barColor = YELLOW;
+  else if (pct < 80)  barColor = PEACH;
   else                barColor = RED;
 
-  return `${DIM}\uF080 ${R}${barColor}${bar}${R}${DIM} ${pct}%${R}`;  //  bar-chart
+  return `${SURFACE2}\uF080 ${R}${barColor}${bar}${R}${SURFACE2} ${pct}%${R}`;  //  bar-chart
 }
 
 let raw = "";
@@ -66,8 +66,8 @@ process.stdin.on("end", () => {
   const ctxStr  = contextBar(usedPct);
 
   // Build output parts
-  const folderPart = `${BOLD_TEAL}\uF07C ${folder}${R}`;   //  folder-open
-  const modelPart  = `${DIM_YEL}\uF2DB ${model}${R}`;      //  microchip
+  const folderPart = `${SAPPHIRE}\uF07C ${folder}${R}`;   //  folder-open
+  const modelPart  = `${LAVENDER}\uF2DB ${model}${R}`;    //  microchip
 
   let parts = [folderPart, modelPart, ctxStr];
 
@@ -88,7 +88,7 @@ process.stdin.on("end", () => {
       }
 
       // Colored branch with  glyph
-      const branchPart = `${MAGENTA} ${branch}${R}`;
+      const branchPart = `${MAUVE}󰘬 ${branch}${R}`;
 
       let insertions = 0;
       let deletions  = 0;
@@ -105,11 +105,11 @@ process.stdin.on("end", () => {
 
       let diffPart;
       if (insertions === 0 && deletions === 0) {
-        diffPart = `${DIM}\uF00C no changes${R}`;  //  check
+        diffPart = `${SURFACE2}\uF00C no changes${R}`;  //  check
       } else {
         diffPart =
           `${GREEN}+${insertions}${R}` +
-          `${DIM} / ${R}` +
+          `${SURFACE2} / ${R}` +
           `${RED}-${deletions}${R}`;
       }
 
