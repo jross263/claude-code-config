@@ -51,7 +51,10 @@ PATCH=$(cat <<EOF
 EOF
 )
 
-jq -s '.[0] * .[1]' "$SETTINGS" <(echo "$PATCH") > "$SETTINGS.tmp"
+PATCH_FILE=$(mktemp)
+echo "$PATCH" > "$PATCH_FILE"
+jq -s '.[0] * .[1]' "$SETTINGS" "$PATCH_FILE" > "$SETTINGS.tmp"
+rm -f "$PATCH_FILE"
 mv "$SETTINGS.tmp" "$SETTINGS"
 
 echo "  Merged hooks and statusLine into settings.json."
