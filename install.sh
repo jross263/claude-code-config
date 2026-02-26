@@ -35,6 +35,13 @@ PATCH=$(cat <<EOF
         "async": true
       }]
     }],
+    "Notification": [{
+      "hooks": [{
+        "type": "command",
+        "command": "$HOME/.claude/hooks/notify.sh 0",
+        "async": true
+      }]
+    }],
     "UserPromptSubmit": [{
       "hooks": [{
         "type": "command",

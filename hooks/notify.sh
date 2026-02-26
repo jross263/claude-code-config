@@ -1,13 +1,14 @@
 #!/bin/bash
+DELAY="${1:-30}"
 SENTINEL="$HOME/.claude/notify_pending"
 
-# Write a unique token for this Stop event
+# Write a unique token for this event
 TOKEN=$(date +%s%N 2>/dev/null || date +%s)
 echo "$TOKEN" > "$SENTINEL"
 
 (
-  sleep 30
-  # Only notify if our token is still current (no new Stop event fired)
+  sleep "$DELAY"
+  # Only notify if our token is still current (no newer event fired)
   if [ "$(cat "$SENTINEL" 2>/dev/null)" = "$TOKEN" ]; then
     rm -f "$SENTINEL"
     powershell.exe -NoProfile -NonInteractive -WindowStyle Hidden -Command "
